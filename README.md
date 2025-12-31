@@ -37,6 +37,10 @@ DB_PASSWORD=your_mongodb_password
 DB_CLUSTER=your_cluster_name
 DB_NAME=your_database_name
 
+# TOTP Secret for Admin Authentication (Required)
+# Generate using: node scripts/generate-totp-secret.js
+TOTP_SECRET=your_generated_totp_secret_here
+
 # LLM API Keys (Optional - for word answer analysis)
 # Use Groq (recommended - faster)
 GROQ_API_KEY=your_groq_api_key_here
@@ -45,12 +49,22 @@ GROQ_API_KEY=your_groq_api_key_here
 HUGGINGFACE_API_KEY=your_huggingface_api_key_here
 ```
 
-3. Run the development server:
+3. **Set up Google Authenticator for Admin Panel**:
+```bash
+# Generate TOTP secret and QR code
+node scripts/generate-totp-secret.js
+```
+This will:
+- Generate a TOTP secret (add to `.env.local` as `TOTP_SECRET`)
+- Provide a QR code URL to scan with Google Authenticator
+- After scanning, you can use the 6-digit codes from the app to access the admin panel
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 **Note**: 
 - If no API key is configured, word answer questions will default to moderate modernity (50%).
@@ -60,7 +74,9 @@ npm run dev
 
 ### Admin Panel
 
-1. Navigate to `/admin` to access the admin panel
+1. Navigate to `/admin/login` to access the admin panel
+2. Enter the 6-digit code from your Google Authenticator app
+3. Once authenticated, you'll have access to the admin panel
 2. Click "Add Question" to create a new question
 3. Fill in the question details:
    - **Question text**: The question to ask

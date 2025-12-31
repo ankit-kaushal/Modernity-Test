@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Question,
@@ -12,6 +13,7 @@ import {
 export default function AdminPanel() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [formData, setFormData] = useState({
@@ -23,10 +25,42 @@ export default function AdminPanel() {
   const [optionInput, setOptionInput] = useState("");
   const [selectedModernityLevel, setSelectedModernityLevel] =
     useState<ModernityLevel>("moderately_modern");
+  const router = useRouter();
 
   useEffect(() => {
-    fetchQuestions();
+    checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (authenticated === true) {
+      fetchQuestions();
+    } else if (authenticated === false) {
+      router.push("/admin/login");
+    }
+  }, [authenticated, router]);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch("/api/auth/check");
+      const data = await response.json();
+      setAuthenticated(data.authenticated);
+      if (!data.authenticated) {
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      setAuthenticated(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/admin/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   const fetchQuestions = async () => {
     try {
@@ -162,12 +196,16 @@ export default function AdminPanel() {
     return colors[level];
   };
 
-  if (loading) {
+  if (authenticated === null || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-xl text-gray-700 dark:text-gray-300">Loading...</div>
       </div>
     );
+  }
+
+  if (authenticated === false) {
+    return null; // Will redirect to login
   }
 
   return (
@@ -184,6 +222,12 @@ export default function AdminPanel() {
             >
               Home
             </Link>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Logout
+            </button>
             <button
               onClick={() => {
                 resetForm();
