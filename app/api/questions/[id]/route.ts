@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const question = getQuestionById(id);
+    const question = await getQuestionById(id);
     if (!question) {
       return NextResponse.json(
         { error: 'Question not found' },
@@ -30,7 +30,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const updated = updateQuestion(id, body);
+    const updated = await updateQuestion(id, body);
     if (!updated) {
       return NextResponse.json(
         { error: 'Question not found' },
@@ -52,7 +52,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const deleted = deleteQuestion(id);
+    const deleted = await deleteQuestion(id);
     if (!deleted) {
       return NextResponse.json(
         { error: 'Question not found' },

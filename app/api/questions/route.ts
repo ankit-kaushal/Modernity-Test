@@ -4,7 +4,7 @@ import { Question } from '@/types/question';
 
 export async function GET() {
   try {
-    const questions = getQuestions();
+    const questions = await getQuestions();
     return NextResponse.json(questions);
   } catch (error) {
     return NextResponse.json(
@@ -22,11 +22,10 @@ export async function POST(request: NextRequest) {
       text: body.text,
       type: body.type,
       options: body.options || [],
-      correctAnswers: body.correctAnswers || [],
       points: body.points || 1,
     };
 
-    const newQuestion = addQuestion(question);
+    const newQuestion = await addQuestion(question);
     return NextResponse.json(newQuestion, { status: 201 });
   } catch (error) {
     return NextResponse.json(

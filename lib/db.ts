@@ -1,71 +1,140 @@
 import { Question } from '@/types/question';
-import fs from 'fs';
-import path from 'path';
+import { MongoClient, Db, Collection } from 'mongodb';
 
-const dataFilePath = path.join(process.cwd(), 'data', 'questions.json');
+let client: MongoClient | null = null;
+let db: Db | null = null;
 
-// Ensure data directory exists
-const ensureDataDirectory = () => {
-  const dataDir = path.join(process.cwd(), 'data');
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+const COLLECTION_NAME = 'questions';
+
+/**
+ * Get MongoDB connection
+ */
+async function getDb(): Promise<Db> {
+  if (db) {
+    return db;
   }
-};
 
-// Read questions from file
-export const getQuestions = (): Question[] => {
-  ensureDataDirectory();
-  if (!fs.existsSync(dataFilePath)) {
-    return [];
+  const authUser = process.env.DB_USERNAME;
+  const authPass = process.env.DB_PASSWORD;
+  const cluster = process.env.DB_CLUSTER;
+  const dbName = process.env.DB_NAME;
+
+  // If MongoDB credentials are not set, throw error
+  if (!authUser || !authPass || !cluster || !dbName) {
+    throw new Error(
+      'MongoDB credentials not configured. Please set DB_USERNAME, DB_PASSWORD, DB_CLUSTER, and DB_NAME environment variables.'
+    );
   }
+
+  // Encode username and password for URL
+  const encodedUser = encodeURIComponent(authUser);
+  const encodedPass = encodeURIComponent(authPass);
+
+  const uri = `mongodb+srv://${encodedUser}:${encodedPass}@${cluster}.s7w4ras.mongodb.net/${dbName}?retryWrites=true&w=majority&appName=${cluster}`;
+
   try {
-    const data = fs.readFileSync(dataFilePath, 'utf-8');
-    return JSON.parse(data);
+    client = new MongoClient(uri);
+    await client.connect();
+    db = client.db(dbName);
+    return db;
   } catch (error) {
-    console.error('Error reading questions:', error);
+    console.error('Error connecting to MongoDB:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get questions collection
+ */
+async function getCollection(): Promise<Collection<Question>> {
+  const database = await getDb();
+  return database.collection<Question>(COLLECTION_NAME);
+}
+
+/**
+ * Get all questions
+ */
+export async function getQuestions(): Promise<Question[]> {
+  try {
+    const collection = await getCollection();
+    const questions = await collection.find({}).toArray();
+    return questions;
+  } catch (error) {
+    console.error('Error fetching questions:', error);
     return [];
   }
-};
+}
 
-// Write questions to file
-export const saveQuestions = (questions: Question[]): void => {
-  ensureDataDirectory();
-  fs.writeFileSync(dataFilePath, JSON.stringify(questions, null, 2));
-};
+/**
+ * Get question by ID
+ */
+export async function getQuestionById(id: string): Promise<Question | undefined> {
+  try {
+    const collection = await getCollection();
+    const question = await collection.findOne({ id });
+    return question || undefined;
+  } catch (error) {
+    console.error('Error fetching question by ID:', error);
+    return undefined;
+  }
+}
 
-// Get question by ID
-export const getQuestionById = (id: string): Question | undefined => {
-  const questions = getQuestions();
-  return questions.find(q => q.id === id);
-};
+/**
+ * Add a new question
+ */
+export async function addQuestion(question: Question): Promise<Question> {
+  try {
+    const collection = await getCollection();
+    await collection.insertOne(question);
+    return question;
+  } catch (error) {
+    console.error('Error adding question:', error);
+    throw error;
+  }
+}
 
-// Add a new question
-export const addQuestion = (question: Question): Question => {
-  const questions = getQuestions();
-  questions.push(question);
-  saveQuestions(questions);
-  return question;
-};
+/**
+ * Update a question
+ */
+export async function updateQuestion(
+  id: string,
+  question: Partial<Question>
+): Promise<Question | null> {
+  try {
+    const collection = await getCollection();
+    const result = await collection.findOneAndUpdate(
+      { id },
+      { $set: question },
+      { returnDocument: 'after' }
+    );
+    return result || null;
+  } catch (error) {
+    console.error('Error updating question:', error);
+    return null;
+  }
+}
 
-// Update a question
-export const updateQuestion = (id: string, question: Partial<Question>): Question | null => {
-  const questions = getQuestions();
-  const index = questions.findIndex(q => q.id === id);
-  if (index === -1) return null;
-  
-  questions[index] = { ...questions[index], ...question };
-  saveQuestions(questions);
-  return questions[index];
-};
+/**
+ * Delete a question
+ */
+export async function deleteQuestion(id: string): Promise<boolean> {
+  try {
+    const collection = await getCollection();
+    const result = await collection.deleteOne({ id });
+    return result.deletedCount > 0;
+  } catch (error) {
+    console.error('Error deleting question:', error);
+    return false;
+  }
+}
 
-// Delete a question
-export const deleteQuestion = (id: string): boolean => {
-  const questions = getQuestions();
-  const filtered = questions.filter(q => q.id !== id);
-  if (filtered.length === questions.length) return false;
-  
-  saveQuestions(filtered);
-  return true;
-};
-
-
+/**
+ * Close MongoDB connection (useful for cleanup)
+ */
+export async function closeConnection(): Promise<void> {
+  if (client) {
+    await client.close();
+    client = null;
+    db = null;
+  }
+}

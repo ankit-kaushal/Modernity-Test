@@ -6,7 +6,7 @@ import { Answer, QuizResult } from '@/types/question';
 export async function POST(request: NextRequest) {
   try {
     const { answers }: { answers: Answer[] } = await request.json();
-    const questions = getQuestions();
+    const questions = await getQuestions();
     
     let totalScore = 0;
     let totalMaxScore = 0;

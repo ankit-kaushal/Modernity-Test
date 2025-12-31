@@ -29,8 +29,15 @@ A Next.js application that allows users to take a questionnaire to determine how
 npm install
 ```
 
-2. Create a `.env.local` file in the root directory (optional):
+2. Create a `.env.local` file in the root directory:
 ```bash
+# MongoDB Configuration (Required)
+DB_USERNAME=your_mongodb_username
+DB_PASSWORD=your_mongodb_password
+DB_CLUSTER=your_cluster_name
+DB_NAME=your_database_name
+
+# LLM API Keys (Optional - for word answer analysis)
 # Use Groq (recommended - faster)
 GROQ_API_KEY=your_groq_api_key_here
 
@@ -97,17 +104,29 @@ npm run dev
 │   ├── results/                # Results page
 │   └── page.tsx                # Home page
 ├── lib/
-│   ├── db.ts                   # Database operations (JSON file)
+│   ├── db.ts                   # MongoDB database operations
 │   └── llm.ts                  # Free LLM integration (Groq/Hugging Face) for modernity analysis
 ├── types/
 │   └── question.ts             # TypeScript types
 └── data/
-    └── questions.json          # Questions storage (auto-created)
+    └── questions.json          # Sample questions (for reference)
 ```
 
 ## Data Storage
 
-Questions are stored in a JSON file at `data/questions.json`. This file is automatically created when you add your first question.
+Questions are stored in **MongoDB**. You need to configure MongoDB connection in your environment variables:
+
+- `DB_USERNAME` - Your MongoDB username
+- `DB_PASSWORD` - Your MongoDB password
+- `DB_CLUSTER` - Your MongoDB cluster name
+- `DB_NAME` - Your database name
+
+The connection string format is:
+```
+mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_CLUSTER}.s7w4ras.mongodb.net/${DB_NAME}?retryWrites=true&w=majority&appName=${DB_CLUSTER}
+```
+
+**Note**: Make sure your MongoDB cluster allows connections from your IP address (or 0.0.0.0/0 for Vercel deployments).
 
 ## How Scoring Works
 
@@ -130,6 +149,7 @@ The final percentage determines the modernity level:
 - TypeScript
 - Tailwind CSS
 - React
+- MongoDB (for data storage)
 - Groq API or Hugging Face API (free LLM-based analysis)
 
 ## License
