@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /quiz
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /results
+Disallow: /api
+
+Sitemap: https://modernitytest.ankitkaushal.in/sitemap.xml
+

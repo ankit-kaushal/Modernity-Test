@@ -23,9 +23,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify the TOTP code (allow 1 step window for clock drift)
-    const isValid = authenticator.check(code, secret, {
+    // Configure authenticator with window option
+    authenticator.options = {
       window: [1, 1], // Allow 1 step before and after current time
-    });
+    };
+    const isValid = authenticator.check(code, secret);
 
     if (!isValid) {
       return NextResponse.json(

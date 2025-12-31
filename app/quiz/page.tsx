@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Question, Answer } from '@/types/question';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Question, Answer } from "@/types/question";
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -18,13 +18,13 @@ export default function QuizPage() {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('/api/questions');
+      const response = await fetch("/api/questions");
       const data = await response.json();
       setQuestions(data);
       // Initialize answers array
-      setAnswers(data.map((q: Question) => ({ questionId: q.id, answer: '' })));
+      setAnswers(data.map((q: Question) => ({ questionId: q.id, answer: "" })));
     } catch (error) {
-      console.error('Error fetching questions:', error);
+      console.error("Error fetching questions:", error);
     } finally {
       setLoading(false);
     }
@@ -52,22 +52,32 @@ export default function QuizPage() {
   };
 
   const handleSubmit = async () => {
-    if (!confirm('Are you sure you want to submit? You cannot change your answers after submission.')) {
+    if (
+      !confirm(
+        "Are you sure you want to submit? You cannot change your answers after submission."
+      )
+    ) {
       return;
     }
 
     setSubmitting(true);
     try {
-      const response = await fetch('/api/calculate-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/calculate-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers }),
       });
       const result = await response.json();
-      router.push(`/results?score=${result.score}&total=${result.totalPoints}&percentage=${result.percentage}&level=${encodeURIComponent(result.level)}`);
+      router.push(
+        `/results?score=${result.score}&total=${
+          result.totalPoints
+        }&percentage=${result.percentage}&level=${encodeURIComponent(
+          result.level
+        )}`
+      );
     } catch (error) {
-      console.error('Error submitting quiz:', error);
-      alert('Failed to submit quiz. Please try again.');
+      console.error("Error submitting quiz:", error);
+      alert("Failed to submit quiz. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -76,7 +86,9 @@ export default function QuizPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="text-xl text-gray-700 dark:text-gray-300">Loading questions...</div>
+        <div className="text-xl text-gray-700 dark:text-gray-300">
+          Loading questions...
+        </div>
       </div>
     );
   }
@@ -103,7 +115,7 @@ export default function QuizPage() {
   }
 
   const currentQuestion = questions[currentIndex];
-  const currentAnswer = answers[currentIndex]?.answer || '';
+  const currentAnswer = answers[currentIndex]?.answer || "";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8">
@@ -122,7 +134,9 @@ export default function QuizPage() {
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div
                 className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+                style={{
+                  width: `${((currentIndex + 1) / questions.length) * 100}%`,
+                }}
               />
             </div>
           </div>
@@ -134,15 +148,15 @@ export default function QuizPage() {
             </h2>
 
             {/* Single Choice */}
-            {currentQuestion.type === 'single' && (
+            {currentQuestion.type === "single" && (
               <div className="space-y-3">
                 {currentQuestion.options?.map((option, index) => (
                   <label
                     key={index}
                     className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
                       currentAnswer === option.text
-                        ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
-                        : 'border-gray-300 dark:border-gray-600 hover:border-indigo-400'
+                        ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                        : "border-gray-300 dark:border-gray-600 hover:border-indigo-400"
                     }`}
                   >
                     <input
@@ -153,41 +167,51 @@ export default function QuizPage() {
                       onChange={(e) => handleAnswerChange(e.target.value)}
                       className="mr-3 w-5 h-5 text-indigo-600 focus:ring-indigo-500"
                     />
-                    <span className="text-gray-900 dark:text-white">{option.text}</span>
+                    <span className="text-gray-900 dark:text-white">
+                      {option.text}
+                    </span>
                   </label>
                 ))}
               </div>
             )}
 
             {/* Multiple Choice */}
-            {currentQuestion.type === 'multiple' && (
+            {currentQuestion.type === "multiple" && (
               <div className="space-y-3">
                 {currentQuestion.options?.map((option, index) => {
-                  const selectedAnswers = Array.isArray(currentAnswer) ? currentAnswer : [];
+                  const selectedAnswers = Array.isArray(currentAnswer)
+                    ? currentAnswer
+                    : [];
                   const isChecked = selectedAnswers.includes(option.text);
                   return (
                     <label
                       key={index}
                       className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
                         isChecked
-                          ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20'
-                          : 'border-gray-300 dark:border-gray-600 hover:border-indigo-400'
+                          ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
+                          : "border-gray-300 dark:border-gray-600 hover:border-indigo-400"
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={(e) => {
-                          const selected = Array.isArray(currentAnswer) ? currentAnswer : [];
+                          const selected = Array.isArray(currentAnswer)
+                            ? currentAnswer
+                            : [];
                           if (e.target.checked) {
                             handleAnswerChange([...selected, option.text]);
                           } else {
-                            handleAnswerChange(selected.filter((a) => a !== option.text));
+                            handleAnswerChange(
+                              selected.filter((a) => a !== option.text)
+                            );
                           }
                         }}
                         className="mr-3 w-5 h-5 text-indigo-600 focus:ring-indigo-500"
                       />
-                      <span className="text-gray-900 dark:text-white">{option.text}</span>
+                      <span className="text-gray-900 dark:text-white">
+                        {option.text}
+                      </span>
                     </label>
                   );
                 })}
@@ -195,11 +219,11 @@ export default function QuizPage() {
             )}
 
             {/* One Word Answer */}
-            {currentQuestion.type === 'word' && (
+            {currentQuestion.type === "word" && (
               <div>
                 <input
                   type="text"
-                  value={typeof currentAnswer === 'string' ? currentAnswer : ''}
+                  value={typeof currentAnswer === "string" ? currentAnswer : ""}
                   onChange={(e) => handleAnswerChange(e.target.value)}
                   placeholder="Enter your answer"
                   className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
@@ -224,7 +248,7 @@ export default function QuizPage() {
                 disabled={submitting}
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Submitting...' : 'Submit Quiz'}
+                {submitting ? "Submitting..." : "Submit Quiz"}
               </button>
             ) : (
               <button
@@ -240,5 +264,3 @@ export default function QuizPage() {
     </div>
   );
 }
-
-

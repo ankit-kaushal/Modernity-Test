@@ -1,24 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
-export default function ResultsPage() {
+function ResultsContent() {
   const searchParams = useSearchParams();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
-      </div>
-    );
-  }
 
   const score = parseFloat(searchParams.get('score') || '0');
   const totalPoints = parseFloat(searchParams.get('total') || '0');
@@ -128,4 +115,18 @@ export default function ResultsPage() {
   );
 }
 
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="text-xl text-gray-700 dark:text-gray-300">Loading results...</div>
+    </div>
+  );
+}
 
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ResultsContent />
+    </Suspense>
+  );
+}

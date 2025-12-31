@@ -41,6 +41,10 @@ DB_NAME=your_database_name
 # Generate using: node scripts/generate-totp-secret.js
 TOTP_SECRET=your_generated_totp_secret_here
 
+# Site URL for SEO (Required for production)
+# Replace with your actual domain, e.g., https://modernity-test.vercel.app
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+
 # LLM API Keys (Optional - for word answer analysis)
 # Use Groq (recommended - faster)
 GROQ_API_KEY=your_groq_api_key_here

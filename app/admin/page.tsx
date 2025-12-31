@@ -164,10 +164,7 @@ export default function AdminPanel() {
     });
   };
 
-  const updateOptionModernity = (
-    index: number,
-    level: ModernityLevel
-  ) => {
+  const updateOptionModernity = (index: number, level: ModernityLevel) => {
     const modernityScores: Record<ModernityLevel, number> = {
       ultra_modern: 100,
       modern: 75,
@@ -187,11 +184,15 @@ export default function AdminPanel() {
 
   const getModernityColor = (level: ModernityLevel) => {
     const colors: Record<ModernityLevel, string> = {
-      ultra_modern: "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200",
+      ultra_modern:
+        "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200",
       modern: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
-      moderately_modern: "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
-      traditional: "bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200",
-      very_traditional: "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200",
+      moderately_modern:
+        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
+      traditional:
+        "bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200",
+      very_traditional:
+        "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200",
     };
     return colors[level];
   };
@@ -199,7 +200,9 @@ export default function AdminPanel() {
   if (authenticated === null || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-xl text-gray-700 dark:text-gray-300">Loading...</div>
+        <div className="text-xl text-gray-700 dark:text-gray-300">
+          Loading...
+        </div>
       </div>
     );
   }
@@ -277,7 +280,9 @@ export default function AdminPanel() {
                 >
                   <option value="single">Single Choice</option>
                   <option value="multiple">Multiple Choice</option>
-                  <option value="word">One Word Answer (LLM will analyze)</option>
+                  <option value="word">
+                    One Word Answer (LLM will analyze)
+                  </option>
                 </select>
               </div>
 
@@ -303,15 +308,21 @@ export default function AdminPanel() {
                     <select
                       value={selectedModernityLevel}
                       onChange={(e) =>
-                        setSelectedModernityLevel(e.target.value as ModernityLevel)
+                        setSelectedModernityLevel(
+                          e.target.value as ModernityLevel
+                        )
                       }
                       className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     >
                       <option value="ultra_modern">Ultra Modern (100)</option>
                       <option value="modern">Modern (75)</option>
-                      <option value="moderately_modern">Moderately Modern (50)</option>
+                      <option value="moderately_modern">
+                        Moderately Modern (50)
+                      </option>
                       <option value="traditional">Traditional (25)</option>
-                      <option value="very_traditional">Very Traditional (0)</option>
+                      <option value="very_traditional">
+                        Very Traditional (0)
+                      </option>
                     </select>
                     <button
                       type="button"
@@ -322,62 +333,69 @@ export default function AdminPanel() {
                     </button>
                   </div>
                   <div className="space-y-2">
-                    {formData.options.map((option: OptionWithModernity, index: number) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                      >
-                        <div className="flex items-center gap-3 flex-1">
-                          <span className="text-gray-900 dark:text-white font-medium">
-                            {option.text}
-                          </span>
-                          <select
-                            value={option.modernityLevel}
-                            onChange={(e) =>
-                              updateOptionModernity(
-                                index,
-                                e.target.value as ModernityLevel
-                              )
-                            }
-                            className="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
-                          >
-                            <option value="ultra_modern">Ultra Modern (100)</option>
-                            <option value="modern">Modern (75)</option>
-                            <option value="moderately_modern">Moderately Modern (50)</option>
-                            <option value="traditional">Traditional (25)</option>
-                            <option value="very_traditional">Very Traditional (0)</option>
-                          </select>
-                          <span
-                            className={`px-2 py-1 text-xs font-semibold rounded ${getModernityColor(
-                              option.modernityLevel
-                            )}`}
-                          >
-                            {option.score} pts
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => removeOption(index)}
-                          className="ml-4 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                    {formData.options.map(
+                      (option: OptionWithModernity, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
                         >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+                          <div className="flex items-center gap-3 flex-1">
+                            <span className="text-gray-900 dark:text-white font-medium">
+                              {option.text}
+                            </span>
+                            <select
+                              value={option.modernityLevel}
+                              onChange={(e) =>
+                                updateOptionModernity(
+                                  index,
+                                  e.target.value as ModernityLevel
+                                )
+                              }
+                              className="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
+                            >
+                              <option value="ultra_modern">
+                                Ultra Modern (100)
+                              </option>
+                              <option value="modern">Modern (75)</option>
+                              <option value="moderately_modern">
+                                Moderately Modern (50)
+                              </option>
+                              <option value="traditional">
+                                Traditional (25)
+                              </option>
+                              <option value="very_traditional">
+                                Very Traditional (0)
+                              </option>
+                            </select>
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded ${getModernityColor(
+                                option.modernityLevel
+                              )}`}
+                            >
+                              {option.score} pts
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeOption(index)}
+                            className="ml-4 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )
+                    )}
                   </div>
-                  {formData.type === "word" && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                      Note: For word answers, modernity will be analyzed using AI when the user submits their answer.
-                    </p>
-                  )}
                 </div>
               )}
 
               {formData.type === "word" && (
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                   <p className="text-sm text-blue-800 dark:text-blue-200">
-                    <strong>Word Answer Questions:</strong> For this question type, users will enter a text answer. 
-                    The system will use AI (LLM) to analyze the modernity level of their answer automatically when they submit the quiz.
+                    <strong>Word Answer Questions:</strong> For this question
+                    type, users will enter a text answer. The system will use AI
+                    (LLM) to analyze the modernity level of their answer
+                    automatically when they submit the quiz.
                   </p>
                 </div>
               )}
@@ -399,7 +417,8 @@ export default function AdminPanel() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  This determines how much this question contributes to the total score.
+                  This determines how much this question contributes to the
+                  total score.
                 </p>
               </div>
 
@@ -470,7 +489,8 @@ export default function AdminPanel() {
                                       option.modernityLevel
                                     )}`}
                                   >
-                                    {option.modernityLevel.replace("_", " ")} ({option.score})
+                                    {option.modernityLevel.replace("_", " ")} (
+                                    {option.score})
                                   </span>
                                 </div>
                               )

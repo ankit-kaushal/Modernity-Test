@@ -1,0 +1,17 @@
+{
+  "name": "Modernity Test",
+  "short_name": "Modernity Test",
+  "description": "Discover how modern you are through an interactive questionnaire",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
+
