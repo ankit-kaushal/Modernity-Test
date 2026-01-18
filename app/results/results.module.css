@@ -1,0 +1,91 @@
+.container {
+  min-height: 100vh;
+  padding: 2rem 0;
+  background-color: #111827;
+}
+
+.card {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.content {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  text-align: center;
+}
+
+.emojiContainer {
+  display: inline-block;
+  border-radius: 50%;
+  font-size: 3rem;
+  width: 5rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.emojiContainerUltra {
+  background: linear-gradient(to right, #a855f7, #ec4899);
+}
+
+.emojiContainerModern {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+}
+
+.emojiContainerModerate {
+  background: linear-gradient(to right, #eab308, #f97316);
+}
+
+.emojiContainerTraditional {
+  background: linear-gradient(to right, #6b7280, #4b5563);
+}
+
+.levelBadge {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  margin-bottom: 2rem;
+}
+
+.levelBadgeUltra {
+  background: linear-gradient(to right, #a855f7, #ec4899);
+}
+
+.levelBadgeModern {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+}
+
+.levelBadgeModerate {
+  background: linear-gradient(to right, #eab308, #f97316);
+}
+
+.levelBadgeTraditional {
+  background: linear-gradient(to right, #6b7280, #4b5563);
+}
+
+.descriptionBox {
+  background-color: #374151;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progressContainer {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

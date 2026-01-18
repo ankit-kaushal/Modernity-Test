@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Question, Answer } from "@/types/question";
+import { Button, Box, Flex, Text, Input, RadioGroup, Loader } from "uiplex";
+import Link from "next/link";
+import styles from "./quiz.module.css";
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -21,7 +24,6 @@ export default function QuizPage() {
       const response = await fetch("/api/questions");
       const data = await response.json();
       setQuestions(data);
-      // Initialize answers array
       setAnswers(data.map((q: Question) => ({ questionId: q.id, answer: "" })));
     } catch (error) {
       console.error("Error fetching questions:", error);
@@ -85,99 +87,126 @@ export default function QuizPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="text-xl text-gray-700 dark:text-gray-300">
-          Loading questions...
-        </div>
-      </div>
+      <Box
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Flex direction="column" align="center" gap="1rem">
+          <Loader size="lg" />
+          <Text color="secondary" size="xl">
+            Loading questions...
+          </Text>
+        </Flex>
+      </Box>
     );
   }
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+      <Flex align="center" justify="center" minHeight="100vh">
+        <Box style={{ textAlign: "center" }}>
+          <Text size="xl" weight="bold" style={{ marginBottom: "1rem" }}>
             No questions available
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
+          </Text>
+          <Text style={{ marginBottom: "1rem" }}>
             Please add questions in the admin panel first.
-          </p>
-          <a
-            href="/admin"
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors inline-block"
-          >
-            Go to Admin Panel
-          </a>
-        </div>
-      </div>
+          </Text>
+          <Link href="/admin" style={{ textDecoration: "none" }}>
+            <Button colorScheme="blue">Go to Admin Panel</Button>
+          </Link>
+        </Box>
+      </Flex>
     );
   }
 
   const currentQuestion = questions[currentIndex];
   const currentAnswer = answers[currentIndex]?.answer || "";
+  const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8">
-      <div className="max-w-3xl mx-auto px-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
-          {/* Progress Bar */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+    <Box
+      className={styles.quizContainer}
+    >
+      <Box style={{ maxWidth: "48rem", margin: "0 auto", padding: "0 1rem" }}>
+        <Box
+          style={{
+            backgroundColor: "#1f2937",
+            borderRadius: "0.5rem",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3)",
+            padding: "2rem",
+          }}
+        >
+          <Box style={{ marginBottom: "2rem" }}>
+            <Flex
+              justify="between"
+              align="center"
+              style={{ marginBottom: "0.5rem" }}
+            >
+              <Text size="sm" style={{ color: "#d1d5db" }}>
                 Question {currentIndex + 1} of {questions.length}
-              </span>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {Math.round(((currentIndex + 1) / questions.length) * 100)}%
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              </Text>
+              <Text size="sm" style={{ color: "#d1d5db" }}>
+                {Math.round(progress)}%
+              </Text>
+            </Flex>
+            <Box
+              style={{
+                width: "100%",
+                height: "0.5rem",
+                backgroundColor: "#374151",
+                borderRadius: "9999px",
+              }}
+            >
               <div
-                className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
                 style={{
-                  width: `${((currentIndex + 1) / questions.length) * 100}%`,
+                  height: "100%",
+                  backgroundColor: "#4f46e5",
+                  borderRadius: "9999px",
+                  width: `${progress}%`,
+                  transition: "width 0.3s",
                 }}
               />
-            </div>
-          </div>
+            </Box>
+          </Box>
 
-          {/* Question */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          <Box style={{ marginBottom: "2rem" }}>
+            <Text
+              as="h2"
+              size="xl"
+              weight="bold"
+              style={{
+                marginBottom: "1.5rem",
+                fontSize: "1.5rem",
+                color: "#ffffff",
+              }}
+            >
               {currentQuestion.text}
-            </h2>
+            </Text>
 
             {/* Single Choice */}
             {currentQuestion.type === "single" && (
-              <div className="space-y-3">
-                {currentQuestion.options?.map((option, index) => (
-                  <label
-                    key={index}
-                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                      currentAnswer === option.text
-                        ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
-                        : "border-gray-300 dark:border-gray-600 hover:border-indigo-400"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name={`question-${currentQuestion.id}`}
-                      value={option.text}
-                      checked={currentAnswer === option.text}
-                      onChange={(e) => handleAnswerChange(e.target.value)}
-                      className="mr-3 w-5 h-5 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="text-gray-900 dark:text-white">
-                      {option.text}
-                    </span>
-                  </label>
-                ))}
-              </div>
+              <RadioGroup
+                name={`question-${currentQuestion.id}`}
+                value={typeof currentAnswer === "string" ? currentAnswer : ""}
+                onChange={(value) => handleAnswerChange(value)}
+                options={
+                  currentQuestion.options?.map((option) => ({
+                    value: option.text,
+                    label: option.text,
+                  })) || []
+                }
+                orientation="vertical"
+                colorScheme="blue"
+              />
             )}
 
             {/* Multiple Choice */}
             {currentQuestion.type === "multiple" && (
-              <div className="space-y-3">
+              <Flex direction="column" gap="0.75rem">
                 {currentQuestion.options?.map((option, index) => {
                   const selectedAnswers = Array.isArray(currentAnswer)
                     ? currentAnswer
@@ -186,11 +215,7 @@ export default function QuizPage() {
                   return (
                     <label
                       key={index}
-                      className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                        isChecked
-                          ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20"
-                          : "border-gray-300 dark:border-gray-600 hover:border-indigo-400"
-                      }`}
+                      className={styles.quizContainerCheckbox}
                     >
                       <input
                         type="checkbox"
@@ -207,60 +232,57 @@ export default function QuizPage() {
                             );
                           }
                         }}
-                        className="mr-3 w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+                        style={{
+                          marginRight: "0.75rem",
+                          width: "1.25rem",
+                          height: "1.25rem",
+                        }}
                       />
-                      <span className="text-gray-900 dark:text-white">
-                        {option.text}
-                      </span>
+                      <Text>{option.text}</Text>
                     </label>
                   );
                 })}
-              </div>
+              </Flex>
             )}
 
             {/* One Word Answer */}
             {currentQuestion.type === "word" && (
-              <div>
-                <input
-                  type="text"
-                  value={typeof currentAnswer === "string" ? currentAnswer : ""}
-                  onChange={(e) => handleAnswerChange(e.target.value)}
-                  placeholder="Enter your answer"
-                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
-                />
-              </div>
+              <Input
+                value={typeof currentAnswer === "string" ? currentAnswer : ""}
+                onChange={(e) => handleAnswerChange(e.target.value)}
+                placeholder="Enter your answer"
+                size="lg"
+              />
             )}
-          </div>
+          </Box>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center">
-            <button
+          <Flex justify="between" align="center">
+            <Button
               onClick={handlePrevious}
               disabled={currentIndex === 0}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              colorScheme="gray"
             >
               Previous
-            </button>
+            </Button>
 
             {currentIndex === questions.length - 1 ? (
-              <button
+              <Button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                colorScheme="green"
+                loading={submitting}
               >
                 {submitting ? "Submitting..." : "Submit Quiz"}
-              </button>
+              </Button>
             ) : (
-              <button
-                onClick={handleNext}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
+              <Button onClick={handleNext} colorScheme="blue">
                 Next
-              </button>
+              </Button>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Flex>
+        </Box>
+      </Box>
+    </Box>
   );
 }

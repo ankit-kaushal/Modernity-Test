@@ -9,6 +9,20 @@ import {
   OptionWithModernity,
   ModernityLevel,
 } from "@/types/question";
+import {
+  Button,
+  Box,
+  Flex,
+  Text,
+  Input,
+  Textarea,
+  Select,
+  FormControl,
+  FormLabel,
+  Loader,
+  IconButton,
+} from "uiplex";
+import styles from "./admin.module.css";
 
 export default function AdminPanel() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -184,26 +198,31 @@ export default function AdminPanel() {
 
   const getModernityColor = (level: ModernityLevel) => {
     const colors: Record<ModernityLevel, string> = {
-      ultra_modern:
-        "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200",
-      modern: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
-      moderately_modern:
-        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
-      traditional:
-        "bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200",
-      very_traditional:
-        "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200",
+      ultra_modern: styles.modernityBadgeUltra,
+      modern: styles.modernityBadgeModern,
+      moderately_modern: styles.modernityBadgeModerate,
+      traditional: styles.modernityBadgeTraditional,
+      very_traditional: styles.modernityBadgeVeryTraditional,
     };
     return colors[level];
   };
 
+  const modernityOptions = [
+    { value: "ultra_modern", label: "Ultra Modern (100)" },
+    { value: "modern", label: "Modern (75)" },
+    { value: "moderately_modern", label: "Moderately Modern (50)" },
+    { value: "traditional", label: "Traditional (25)" },
+    { value: "very_traditional", label: "Very Traditional (0)" },
+  ];
+
   if (authenticated === null || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-xl text-gray-700 dark:text-gray-300">
-          Loading...
-        </div>
-      </div>
+      <Box className={styles.loadingContainer}>
+        <Flex direction="column" align="center" gap="1rem">
+          <Loader size="lg" />
+          <Text style={{ color: "#ffffff" }}>Loading...</Text>
+        </Flex>
+      </Box>
     );
   }
 
@@ -212,323 +231,437 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+    <Box
+      style={{
+        minHeight: "100vh",
+        padding: "1rem 0",
+        backgroundColor: "#111827",
+      }}
+    >
+      <Box style={{ maxWidth: "72rem", margin: "0 auto", padding: "0 1rem" }}>
+        <Flex
+          direction="column"
+          justify="between"
+          align="start"
+          gap="1rem"
+          className={`${styles.header} ${styles.headerRow}`}
+        >
+          <Text
+            as="h1"
+            size="xl"
+            weight="bold"
+            className={styles.title}
+          >
             Admin Panel
-          </h1>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+          </Text>
+          <Flex
+            direction="column"
+            gap="0.5rem"
+            style={{ width: "100%" }}
+            className={styles.headerActions}
+          >
             <Link
               href="/"
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-center text-sm sm:text-base"
+              style={{ textDecoration: "none", width: "100%" }}
+              className={styles.formField}
             >
-              Home
+              <Button
+                colorScheme="gray"
+                style={{ width: "100%" }}
+                className={styles.formField}
+              >
+                Home
+              </Button>
             </Link>
-            <button
+            <Button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
+              colorScheme="red"
+              style={{ width: "100%" }}
+              className={styles.formField}
             >
               Logout
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => {
                 resetForm();
                 setShowForm(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base"
+              colorScheme="blue"
+              style={{ width: "100%" }}
+              className={styles.formField}
             >
               Add Question
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Flex>
+        </Flex>
 
         {showForm && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
+          <Box className={styles.formCard}>
+            <Text
+              as="h2"
+              size="xl"
+              weight="semibold"
+              style={{ marginBottom: "1rem", color: "#ffffff" }}
+            >
               {editingQuestion ? "Edit Question" : "Add New Question"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Question Text
-                </label>
-                <textarea
-                  value={formData.text}
-                  onChange={(e) =>
-                    setFormData({ ...formData, text: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  rows={3}
-                  required
-                />
-              </div>
+            </Text>
+            <form onSubmit={handleSubmit}>
+              <Flex direction="column" gap="1rem">
+                <FormControl>
+                  <FormLabel>Question Text</FormLabel>
+                  <Textarea
+                    value={formData.text}
+                    onChange={(e) =>
+                      setFormData({ ...formData, text: e.target.value })
+                    }
+                    rows={3}
+                    required
+                  />
+                </FormControl>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Question Type
-                </label>
-                <select
-                  value={formData.type}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      type: e.target.value as QuestionType,
-                    })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="single">Single Choice</option>
-                  <option value="multiple">Multiple Choice</option>
-                  <option value="word">
-                    One Word Answer (LLM will analyze)
-                  </option>
-                </select>
-              </div>
+                <FormControl>
+                  <FormLabel>Question Type</FormLabel>
+                  <Select
+                    value={formData.type}
+                    onChange={(value) =>
+                      setFormData({
+                        ...formData,
+                        type: value as QuestionType,
+                      })
+                    }
+                    options={[
+                      { value: "single", label: "Single Choice" },
+                      { value: "multiple", label: "Multiple Choice" },
+                      {
+                        value: "word",
+                        label: "One Word Answer (LLM will analyze)",
+                      },
+                    ]}
+                  />
+                </FormControl>
 
-              {(formData.type === "single" || formData.type === "multiple") && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Options with Modernity Levels
-                  </label>
-                  <div className="flex flex-col sm:flex-row gap-2 mb-2">
-                    <input
-                      type="text"
-                      value={optionInput}
-                      onChange={(e) => setOptionInput(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addOption();
+                {(formData.type === "single" ||
+                  formData.type === "multiple") && (
+                  <FormControl>
+                    <FormLabel>Options with Modernity Levels</FormLabel>
+                    <Flex
+                      direction="column"
+                      gap="0.5rem"
+                      style={{ marginBottom: "0.5rem" }}
+                      className={styles.formRow}
+                    >
+                      <Input
+                        type="text"
+                        value={optionInput}
+                        onChange={(e) => setOptionInput(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            addOption();
+                          }
+                        }}
+                        placeholder="Enter option text"
+                        style={{ flex: 1 }}
+                      />
+                      <Select
+                        value={selectedModernityLevel}
+                        onChange={(value) =>
+                          setSelectedModernityLevel(value as ModernityLevel)
                         }
-                      }}
-                      placeholder="Enter option text"
-                      className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    />
-                    <select
-                      value={selectedModernityLevel}
-                      onChange={(e) =>
-                        setSelectedModernityLevel(
-                          e.target.value as ModernityLevel
-                        )
-                      }
-                      className="px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    >
-                      <option value="ultra_modern">Ultra Modern (100)</option>
-                      <option value="modern">Modern (75)</option>
-                      <option value="moderately_modern">
-                        Moderately Modern (50)
-                      </option>
-                      <option value="traditional">Traditional (25)</option>
-                      <option value="very_traditional">
-                        Very Traditional (0)
-                      </option>
-                    </select>
-                    <button
-                      type="button"
-                      onClick={addOption}
-                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 text-sm sm:text-base whitespace-nowrap"
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="space-y-2">
-                    {formData.options.map(
-                      (option: OptionWithModernity, index: number) => (
-                        <div
-                          key={index}
-                          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                            <span className="text-sm sm:text-base text-gray-900 dark:text-white font-medium break-words">
-                              {option.text}
-                            </span>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <select
-                                value={option.modernityLevel}
-                                onChange={(e) =>
-                                  updateOptionModernity(
-                                    index,
-                                    e.target.value as ModernityLevel
-                                  )
-                                }
-                                className="px-2 sm:px-3 py-1 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
-                              >
-                                <option value="ultra_modern">
-                                  Ultra Modern (100)
-                                </option>
-                                <option value="modern">Modern (75)</option>
-                                <option value="moderately_modern">
-                                  Moderately Modern (50)
-                                </option>
-                                <option value="traditional">
-                                  Traditional (25)
-                                </option>
-                                <option value="very_traditional">
-                                  Very Traditional (0)
-                                </option>
-                              </select>
-                              <span
-                                className={`px-2 py-1 text-xs font-semibold rounded whitespace-nowrap ${getModernityColor(
-                                  option.modernityLevel
-                                )}`}
-                              >
-                                {option.score} pts
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeOption(index)}
-                            className="self-start sm:self-auto text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-xl sm:text-2xl font-bold"
+                        options={modernityOptions}
+                      />
+                      <Button
+                        type="button"
+                        onClick={addOption}
+                        colorScheme="gray"
+                      >
+                        Add
+                      </Button>
+                    </Flex>
+                    <Flex direction="column" gap="0.5rem">
+                      {formData.options.map(
+                        (option: OptionWithModernity, index: number) => (
+                          <Box
+                            key={index}
+                            style={{
+                              padding: "0.75rem",
+                              backgroundColor: "#374151",
+                              borderRadius: "0.5rem",
+                            }}
                           >
-                            ×
-                          </button>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {formData.type === "word" && (
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    <strong>Word Answer Questions:</strong> For this question
-                    type, users will enter a text answer. The system will use AI
-                    (LLM) to analyze the modernity level of their answer
-                    automatically when they submit the quiz.
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Question Weight (Points)
-                </label>
-                <input
-                  type="number"
-                  value={formData.points}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      points: parseInt(e.target.value) || 1,
-                    })
-                  }
-                  min="1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  This determines how much this question contributes to the
-                  total score.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base"
-                >
-                  {editingQuestion ? "Update" : "Create"} Question
-                </button>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="w-full sm:w-auto px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm sm:text-base"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-          <h2 className="text-xl sm:text-2xl font-semibold p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
-            Questions ({questions.length})
-          </h2>
-          <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {questions.length === 0 ? (
-              <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-                No questions yet. Add your first question!
-              </div>
-            ) : (
-              questions.map((question) => (
-                <div
-                  key={question.id}
-                  className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
-                        <span className="px-2 py-1 text-xs font-semibold rounded bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
-                          {question.type}
-                        </span>
-                        <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                          {question.points || 1} pts
-                        </span>
-                      </div>
-                      <p className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2 break-words">
-                        {question.text}
-                      </p>
-                      {question.options && question.options.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            Options with Modernity Levels:
-                          </p>
-                          <div className="space-y-1">
-                            {question.options.map(
-                              (option: OptionWithModernity, idx: number) => (
-                                <div
-                                  key={idx}
-                                  className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                            <Flex
+                              direction="column"
+                              justify="between"
+                              align="start"
+                              gap="0.75rem"
+                              className={styles.questionRow}
+                            >
+                              <Flex
+                                direction="column"
+                                align="start"
+                                gap="0.75rem"
+                                style={{ flex: 1, minWidth: 0 }}
+                                className={styles.questionContent}
+                              >
+                                <Text
+                                  weight="medium"
+                                  style={{ wordBreak: "break-word", color: "#ffffff" }}
                                 >
-                                  <span className="text-gray-700 dark:text-gray-300 break-words">
-                                    • {option.text}
-                                  </span>
-                                  <span
-                                    className={`px-2 py-0.5 text-xs font-semibold rounded whitespace-nowrap ${getModernityColor(
+                                  {option.text}
+                                </Text>
+                                <Flex align="center" gap="0.5rem" wrap="wrap">
+                                  <Select
+                                    value={option.modernityLevel}
+                                    onChange={(value) =>
+                                      updateOptionModernity(
+                                        index,
+                                        value as ModernityLevel
+                                      )
+                                    }
+                                    size="sm"
+                                    options={modernityOptions}
+                                  />
+                                  <Box
+                                    as="span"
+                                    className={`${styles.modernityBadge} ${getModernityColor(
                                       option.modernityLevel
                                     )}`}
                                   >
-                                    {option.modernityLevel.replace("_", " ")} (
-                                    {option.score})
-                                  </span>
-                                </div>
+                                    {option.score} pts
+                                  </Box>
+                                </Flex>
+                              </Flex>
+                              <Button
+                                type="button"
+                                onClick={() => removeOption(index)}
+                                variant="outline"
+                                style={{
+                                  color: "#fca5a5",
+                                  fontSize: "1.5rem",
+                                  padding: "0.25rem",
+                                  border: "none",
+                                  background: "transparent",
+                                }}
+                              >
+                                ×
+                              </Button>
+                            </Flex>
+                          </Box>
+                        )
+                      )}
+                    </Flex>
+                  </FormControl>
+                )}
+
+                {formData.type === "word" && (
+                  <Box className={styles.errorBox}>
+                    <Text size="sm" className={styles.errorText}>
+                      <strong>Word Answer Questions:</strong> For this question
+                      type, users will enter a text answer. The system will use
+                      AI (LLM) to analyze the modernity level of their answer
+                      automatically when they submit the quiz.
+                    </Text>
+                  </Box>
+                )}
+
+                <FormControl>
+                  <FormLabel>Question Weight (Points)</FormLabel>
+                  <Input
+                    type="number"
+                    value={formData.points}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        points: parseInt(e.target.value) || 1,
+                      })
+                    }
+                    min="1"
+                  />
+                  <Text
+                    size="sm"
+                    style={{
+                      marginTop: "0.25rem",
+                      color: "#6b7280",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    This determines how much this question contributes to the
+                    total score.
+                  </Text>
+                </FormControl>
+
+                <Flex direction="column" gap="0.75rem" className={styles.formRow}>
+                  <Button
+                    type="submit"
+                    colorScheme="blue"
+                    style={{ width: "100%" }}
+                    className={styles.formField}
+                  >
+                    {editingQuestion ? "Update" : "Create"} Question
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={resetForm}
+                    colorScheme="gray"
+                    style={{ width: "100%" }}
+                    className={styles.formField}
+                  >
+                    Cancel
+                  </Button>
+                </Flex>
+              </Flex>
+            </form>
+          </Box>
+        )}
+
+        <Box className={styles.questionsCard}>
+          <Box className={styles.questionItem} style={{ borderBottom: "1px solid #374151" }}>
+            <Text as="h2" size="xl" weight="semibold" style={{ color: "#ffffff" }}>
+              Questions ({questions.length})
+            </Text>
+          </Box>
+          <Box>
+            {questions.length === 0 ? (
+              <Box style={{ padding: "1.5rem", textAlign: "center" }}>
+                <Text style={{ color: "#9ca3af" }}>
+                  No questions yet. Add your first question!
+                </Text>
+              </Box>
+            ) : (
+              questions.map((question) => (
+                <Box
+                  key={question.id}
+                  className={styles.questionItem}
+                >
+                  <Flex
+                    direction="column"
+                    justify="between"
+                    align="start"
+                    gap="1rem"
+                    className={styles.questionRow}
+                  >
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <Flex
+                        align="center"
+                        gap="0.75rem"
+                        wrap="wrap"
+                        style={{ marginBottom: "0.5rem" }}
+                      >
+                        <Box
+                          as="span"
+                          className={`${styles.typeBadge} ${
+                            question.type === "single"
+                              ? styles.typeBadgeSingle
+                              : question.type === "multiple"
+                              ? styles.typeBadgeMultiple
+                              : styles.typeBadgeWord
+                          }`}
+                        >
+                          {question.type}
+                        </Box>
+                        <Box
+                          as="span"
+                          className={styles.successBox}
+                          style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", fontWeight: 600, borderRadius: "0.25rem" }}
+                        >
+                          {question.points || 1} pts
+                        </Box>
+                      </Flex>
+                      <Text
+                        as="p"
+                        size="lg"
+                        weight="medium"
+                        style={{
+                          marginBottom: "0.5rem",
+                          wordBreak: "break-word",
+                          color: "#ffffff",
+                        }}
+                      >
+                        {question.text}
+                      </Text>
+                      {question.options && question.options.length > 0 && (
+                        <Box style={{ marginTop: "0.5rem" }}>
+                      <Text
+                        size="sm"
+                        style={{ marginBottom: "0.5rem", color: "#d1d5db" }}
+                      >
+                        Options with Modernity Levels:
+                      </Text>
+                          <Flex direction="column" gap="0.25rem">
+                            {question.options.map(
+                              (option: OptionWithModernity, idx: number) => (
+                                  <Flex
+                                    key={idx}
+                                    direction="column"
+                                    align="start"
+                                    gap="0.5rem"
+                                    className={styles.optionRow}
+                                  >
+                                    <Text
+                                      size="sm"
+                                      style={{ wordBreak: "break-word", color: "#d1d5db" }}
+                                    >
+                                      • {option.text}
+                                    </Text>
+                                    <Box
+                                      as="span"
+                                      className={`${styles.modernityBadge} ${getModernityColor(
+                                        option.modernityLevel
+                                      )}`}
+                                    >
+                                      {option.modernityLevel.replace("_", " ")} (
+                                      {option.score})
+                                    </Box>
+                                  </Flex>
                               )
                             )}
-                          </div>
-                        </div>
+                          </Flex>
+                        </Box>
                       )}
                       {question.type === "word" && (
-                        <div className="mt-2">
-                          <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
-                            AI will analyze answer modernity
-                          </span>
-                        </div>
+                        <Box style={{ marginTop: "0.5rem" }}>
+                          <Box
+                            as="span"
+                            className={styles.errorBox}
+                            style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", borderRadius: "0.25rem", display: "inline-block" }}
+                          >
+                            <span className={styles.errorText}>AI will analyze answer modernity</span>
+                          </Box>
+                        </Box>
                       )}
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:ml-4 w-full sm:w-auto">
-                      <button
+                    </Box>
+                    <Flex
+                      direction="column"
+                      gap="0.5rem"
+                      style={{ width: "100%" }}
+                      className={styles.questionActions}
+                    >
+                      <Button
                         onClick={() => handleEdit(question)}
-                        className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        colorScheme="blue"
+                        size="sm"
+                        style={{ width: "100%" }}
+                        className={styles.formField}
                       >
                         Edit
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => handleDelete(question.id)}
-                        className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                        colorScheme="red"
+                        size="sm"
+                        style={{ width: "100%" }}
+                        className={styles.formField}
                       >
                         Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </Box>
               ))
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }

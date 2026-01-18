@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button, Box, Flex, Text, Input, FormControl, FormLabel, Loader } from "uiplex";
+import Link from "next/link";
+import styles from "./login.module.css";
 
 export default function AdminLogin() {
   const [code, setCode] = useState("");
@@ -29,7 +32,6 @@ export default function AdminLogin() {
         return;
       }
 
-      // Redirect to admin panel
       router.push("/admin");
     } catch (error) {
       console.error("Login error:", error);
@@ -39,74 +41,75 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center py-8 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+    <Box className={styles.container}>
+      <Box className={styles.card}>
+        <Box className={styles.header}>
+          <Text as="h1" size="xl" weight="bold" style={{ marginBottom: "0.5rem", fontSize: "1.875rem", color: "#ffffff" }}>
             Admin Login
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          </Text>
+          <Text style={{ color: "#d1d5db" }}>
             Enter your Google Authenticator code
-          </p>
-        </div>
+          </Text>
+        </Box>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="code"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        <form onSubmit={handleSubmit}>
+          <Flex direction="column" gap="1.5rem">
+            <FormControl>
+              <FormLabel htmlFor="code" style={{color: "#ffffff"}}>Authentication Code</FormLabel>
+              <Input
+                id="code"
+                type="text"
+                value={code}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+                  setCode(value);
+                  setError("");
+                }}
+                placeholder="000000"
+                maxLength={6}
+                autoComplete="off"
+                autoFocus
+                required
+                style={{
+                  textAlign: "center",
+                  fontSize: "1.5rem",
+                  letterSpacing: "0.5em",
+                  padding: "0.75rem",
+                }}
+              />
+              <Text size="sm" style={{ marginTop: "0.5rem", textAlign: "center", color: "#9ca3af", fontSize: "0.75rem" }}>
+                Enter the 6-digit code from your authenticator app
+              </Text>
+            </FormControl>
+
+            {error && (
+              <Box className={styles.errorBox}>
+                <Text size="sm" className={styles.errorText}>
+                  {error}
+                </Text>
+              </Box>
+            )}
+
+            <Button
+              type="submit"
+              disabled={loading || code.length !== 6}
+              colorScheme="blue"
+              loading={loading}
+              style={{ width: "100%" }}
             >
-              Authentication Code
-            </label>
-            <input
-              id="code"
-              type="text"
-              value={code}
-              onChange={(e) => {
-                // Only allow numbers and limit to 6 digits
-                const value = e.target.value.replace(/\D/g, "").slice(0, 6);
-                setCode(value);
-                setError("");
-              }}
-              placeholder="000000"
-              className="w-full px-4 py-3 text-center text-2xl tracking-widest border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              maxLength={6}
-              autoComplete="off"
-              autoFocus
-              required
-            />
-            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-              Enter the 6-digit code from your authenticator app
-            </p>
-          </div>
-
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-              <p className="text-sm text-red-800 dark:text-red-200 text-center">
-                {error}
-              </p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading || code.length !== 6}
-            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Verifying..." : "Verify & Login"}
-          </button>
+              {loading ? "Verifying..." : "Verify & Login"}
+            </Button>
+          </Flex>
         </form>
 
-        <div className="mt-6 text-center">
-          <a
-            href="/"
-            className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
-          >
-            ← Back to Home
-          </a>
-        </div>
-      </div>
-    </div>
+        <Box className={styles.backLink}>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Text size="sm" className={styles.backLinkText}>
+              ← Back to Home
+            </Text>
+          </Link>
+        </Box>
+      </Box>
+    </Box>
   );
 }
-

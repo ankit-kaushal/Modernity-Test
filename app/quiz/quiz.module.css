@@ -1,0 +1,34 @@
+.quizContainer {
+    min-height: 100vh;
+    padding: 2rem 0;
+    background-color: #111827;
+}
+
+.quizContainer :global(.ui-radio) {
+    padding: 16px;
+    border: 2px solid #4b5563;
+    border-radius: 8px;
+}
+
+.quizContainer :global(.ui-radio .ui-radio__label) {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: #ffffff;
+}
+
+.quizContainerCheckbox {
+    display: flex;
+    padding: 16px;
+    border: 2px solid #4b5563;
+    border-radius: 8px;
+}
+
+.quizContainerCheckbox :global(.ui-text) {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: #ffffff;
+}

@@ -1,0 +1,189 @@
+.container {
+  min-height: 100vh;
+  padding: 1rem 0;
+  background-color: #111827;
+}
+
+.content {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: 2.25rem;
+  }
+}
+
+.formCard {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.questionsCard {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.modernityBadge {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.modernityBadgeUltra {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+}
+
+.modernityBadgeModern {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.modernityBadgeModerate {
+  background-color: rgba(234, 179, 8, 0.2);
+  color: #fde047;
+}
+
+.modernityBadgeTraditional {
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+}
+
+.modernityBadgeVeryTraditional {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.questionItem {
+  border-bottom: 1px solid #374151;
+  padding: 1rem;
+}
+
+.questionItem:last-child {
+  border-bottom: none;
+}
+
+.questionItem:hover {
+  background-color: #374151;
+}
+
+.typeBadge {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+}
+
+.typeBadgeSingle {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+}
+
+.typeBadgeMultiple {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+.typeBadgeWord {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+@media (min-width: 640px) {
+  .headerRow {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .headerActions {
+    flex-direction: row;
+    width: auto;
+  }
+  
+  .formRow {
+    flex-direction: row;
+  }
+  
+  .formField {
+    width: auto;
+  }
+  
+  .questionRow {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .questionContent {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .questionActions {
+    flex-direction: row;
+    width: auto;
+    margin-left: 1rem;
+  }
+  
+  .optionRow {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorBox {
+  background-color: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.errorText {
+  color: #93c5fd;
+}
+
+.successBox {
+  background-color: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.successText {
+  color: #86efac;
+}

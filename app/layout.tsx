@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "uiplex/styles.css";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
@@ -85,8 +87,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className="dark">
+      <body className="dark">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
