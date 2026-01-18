@@ -167,8 +167,9 @@ The final percentage determines the modernity level:
 
 - Next.js 14 (App Router)
 - TypeScript
-- Tailwind CSS
+- CSS Modules
 - React
+- uiplex (UI component library)
 - MongoDB (for data storage)
 - Groq API or Hugging Face API (free LLM-based analysis)
 
