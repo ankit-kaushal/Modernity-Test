@@ -231,14 +231,8 @@ export default function AdminPanel() {
   }
 
   return (
-    <Box
-      style={{
-        minHeight: "100vh",
-        padding: "1rem 0",
-        backgroundColor: "#111827",
-      }}
-    >
-      <Box style={{ maxWidth: "72rem", margin: "0 auto", padding: "0 1rem" }}>
+    <Box className={styles.container}>
+      <Box className={styles.content}>
         <Flex
           direction="column"
           justify="between"
@@ -257,7 +251,7 @@ export default function AdminPanel() {
           <Flex
             direction="column"
             gap="0.5rem"
-            style={{ width: "100%" }}
+            style={{ width: "40%" }}
             className={styles.headerActions}
           >
             <Link
@@ -308,7 +302,7 @@ export default function AdminPanel() {
             <form onSubmit={handleSubmit}>
               <Flex direction="column" gap="1rem">
                 <FormControl>
-                  <FormLabel>Question Text</FormLabel>
+                  <FormLabel style={{ color: "#ffffff" }}>Question Text</FormLabel>
                   <Textarea
                     value={formData.text}
                     onChange={(e) =>
@@ -320,7 +314,7 @@ export default function AdminPanel() {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel>Question Type</FormLabel>
+                  <FormLabel style={{ color: "#ffffff" }}>Question Type</FormLabel>
                   <Select
                     value={formData.type}
                     onChange={(value) =>
@@ -343,7 +337,7 @@ export default function AdminPanel() {
                 {(formData.type === "single" ||
                   formData.type === "multiple") && (
                   <FormControl>
-                    <FormLabel>Options with Modernity Levels</FormLabel>
+                    <FormLabel style={{ color: "#ffffff" }}>Options with Modernity Levels</FormLabel>
                     <Flex
                       direction="column"
                       gap="0.5rem"
@@ -361,7 +355,7 @@ export default function AdminPanel() {
                           }
                         }}
                         placeholder="Enter option text"
-                        style={{ flex: 1 }}
+                        style={{ flex: 1, minWidth: "50%" }}
                       />
                       <Select
                         value={selectedModernityLevel}
@@ -369,6 +363,7 @@ export default function AdminPanel() {
                           setSelectedModernityLevel(value as ModernityLevel)
                         }
                         options={modernityOptions}
+                        style={{ minWidth: "200px" }}
                       />
                       <Button
                         type="button"
@@ -383,11 +378,7 @@ export default function AdminPanel() {
                         (option: OptionWithModernity, index: number) => (
                           <Box
                             key={index}
-                            style={{
-                              padding: "0.75rem",
-                              backgroundColor: "#374151",
-                              borderRadius: "0.5rem",
-                            }}
+                            className={styles.optionItem}
                           >
                             <Flex
                               direction="column"
@@ -465,7 +456,7 @@ export default function AdminPanel() {
                 )}
 
                 <FormControl>
-                  <FormLabel>Question Weight (Points)</FormLabel>
+                  <FormLabel style={{ color: "#ffffff" }}>Question Weight (Points)</FormLabel>
                   <Input
                     type="number"
                     value={formData.points}
@@ -481,7 +472,7 @@ export default function AdminPanel() {
                     size="sm"
                     style={{
                       marginTop: "0.25rem",
-                      color: "#6b7280",
+                      color: "#9ca3af",
                       fontSize: "0.75rem",
                     }}
                   >
@@ -514,8 +505,8 @@ export default function AdminPanel() {
           </Box>
         )}
 
-        <Box className={styles.questionsCard}>
-          <Box className={styles.questionItem} style={{ borderBottom: "1px solid #374151" }}>
+          <Box className={styles.questionsCard}>
+          <Box className={styles.questionItem} style={{ borderBottom: "1px solid #374151", padding: "1.5rem" }}>
             <Text as="h2" size="xl" weight="semibold" style={{ color: "#ffffff" }}>
               Questions ({questions.length})
             </Text>
@@ -532,13 +523,14 @@ export default function AdminPanel() {
                 <Box
                   key={question.id}
                   className={styles.questionItem}
+                  style={{ padding: "1.5rem" }}
                 >
                   <Flex
-                    direction="column"
+                    direction="row"
                     justify="between"
                     align="start"
                     gap="1rem"
-                    className={styles.questionRow}
+                    style={{ width: "100%" }}
                   >
                     <Box style={{ flex: 1, minWidth: 0 }}>
                       <Flex
@@ -561,8 +553,8 @@ export default function AdminPanel() {
                         </Box>
                         <Box
                           as="span"
-                          className={styles.successBox}
-                          style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", fontWeight: 600, borderRadius: "0.25rem" }}
+                          className={`${styles.modernityBadge} ${styles.modernityBadgeModern}`}
+                          style={{ backgroundColor: "rgba(34, 197, 94, 0.2)", color: "#86efac" }}
                         >
                           {question.points || 1} pts
                         </Box>
@@ -622,10 +614,9 @@ export default function AdminPanel() {
                         <Box style={{ marginTop: "0.5rem" }}>
                           <Box
                             as="span"
-                            className={styles.errorBox}
-                            style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", borderRadius: "0.25rem", display: "inline-block" }}
+                            className={`${styles.modernityBadge} ${styles.typeBadgeWord}`}
                           >
-                            <span className={styles.errorText}>AI will analyze answer modernity</span>
+                            AI will analyze answer modernity
                           </Box>
                         </Box>
                       )}
@@ -633,15 +624,12 @@ export default function AdminPanel() {
                     <Flex
                       direction="column"
                       gap="0.5rem"
-                      style={{ width: "100%" }}
                       className={styles.questionActions}
                     >
                       <Button
                         onClick={() => handleEdit(question)}
                         colorScheme="blue"
                         size="sm"
-                        style={{ width: "100%" }}
-                        className={styles.formField}
                       >
                         Edit
                       </Button>
@@ -649,8 +637,6 @@ export default function AdminPanel() {
                         onClick={() => handleDelete(question.id)}
                         colorScheme="red"
                         size="sm"
-                        style={{ width: "100%" }}
-                        className={styles.formField}
                       >
                         Delete
                       </Button>

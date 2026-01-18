@@ -12,6 +12,7 @@
 
 .header {
   margin-bottom: 2rem;
+  padding: 0;
 }
 
 .title {
@@ -37,7 +38,7 @@
   background-color: #1f2937;
   border-radius: 0.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-  padding: 1.5rem;
+  padding: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -83,7 +84,10 @@
 
 .questionItem {
   border-bottom: 1px solid #374151;
-  padding: 1rem;
+  padding: 1.5rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .questionItem:last-child {
@@ -125,20 +129,24 @@
   .headerActions {
     flex-direction: row;
     width: auto;
+    gap: 0.5rem;
   }
   
   .formRow {
     flex-direction: row;
+    gap: 0.75rem;
   }
   
   .formField {
     width: auto;
+    min-width: 0;
   }
   
-  .questionRow {
-    flex-direction: row;
-    align-items: center;
-  }
+.questionRow {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+}
   
   .questionContent {
     flex-direction: row;
@@ -149,11 +157,19 @@
     flex-direction: row;
     width: auto;
     margin-left: 1rem;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .questionActions button {
+    width: auto;
+    min-width: 80px;
   }
   
   .optionRow {
     flex-direction: row;
     align-items: center;
+    gap: 0.5rem;
   }
 }
 
@@ -186,4 +202,41 @@
 
 .successText {
   color: #86efac;
+}
+
+.optionItem {
+  padding: 0.75rem;
+  background-color: #374151;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.optionItem:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 639px) {
+  .formRow {
+    flex-direction: column;
+  }
+  
+  .formRow > * {
+    width: 100%;
+  }
+  
+  .questionActions {
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+  
+  .questionActions button {
+    width: 100%;
+  }
+  
+  .questionRow {
+    flex-direction: column;
+  }
 }
